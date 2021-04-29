@@ -6,11 +6,7 @@ import * as fs from 'fs-extra'
 
 const readPrediction = R.prop('prediction');
 
-const ensureDirectoryExist = a => fs.ensureDir(`./predicted/${a}`);
-
-const ensureDirectories = R.map(ensureDirectoryExist);
+const ensureDirectoryExist = targetDir => fs.ensureDirSync(`./predicted/${targetDir}`);
 
 
-
-
-export {ensureDirectoryExist, ensureDirectories, readPrediction};
+export {ensureDirectoryExist, readPrediction};
