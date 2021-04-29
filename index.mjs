@@ -10,35 +10,32 @@ const callTensorflow = str => ({
     prediction: (['dogs', 'cats', 'panda']).sort(() => Math.random() - 0.5)[0],
 })
 
-// console.log(callTensorflow('coucou'))
 
 const addPredictionToListPred = R.pipe(callTensorflow, readPrediction, ensureDirectoryExist)
 
-addPredictionToListPred('aze');
-
-const images = ['./image/cats_00001.jpg', './image/dogs_00001.jpg', './image/panda_00001.jpg'];
+// const images = ['./image/cats_00001.jpg', './image/dogs_00001.jpg', './image/panda_00001.jpg'];
+const images = ['./image/cats_00001.jpg'];
 const pred = ['cats', 'dogs', 'panda'];
 
 const main2 = R.pipe(callTensorflow, readPrediction, ensureDirectoryExist)
 
-const main3 = R.applySpec({
-    sourceFile: R.identity,
-    prediction: R.pipe(callTensorflow, readPrediction)
-})
+const log2 = (src, dest) => console.log("src " + src + " dest " + dest)
+
+const mvFile = sourceAndPrediction => mvToFilePredicted(sourceAndPrediction.sourceFile, sourceAndPrediction.prediction)
+
+const main3 = R.pipe(R.applySpec({
+        sourceFile: R.identity,
+        prediction: R.pipe(callTensorflow, readPrediction, R.tap(ensureDirectoryExist))
+    }),
+    mvFile
+    // R.compose(log2, R.prop('sourceFile'), R.prop('prediction'))
+    // R.values
+    // R.tap(console.log)
+    // mvToFilePredicted(R.nth(0),R.nth(1))
+)
+
 
 console.log(R.map(main3, images))
-
-
-const main = (listImages, predict) => R.pipe(
-    addPredictionToListPred(predict),
-    R.andThen(mvToFilePredicted(images, readPrediction))
-)(a);
-
-
-
-
-
-
 
 
 
