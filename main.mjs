@@ -1,7 +1,7 @@
 import * as R from 'ramda'
 import {mvToFilePredicted, ensureDirectoryExist} from './modules/file-utils.mjs';
-import {callTensorflow, readPrediction} from './modules/machineLearning-utils.mjs';
-import {readBbox, readSizeOfImages} from './modules/resize-bbox.mjs';
+import {callTensorflow, readPrediction, readBbox} from './modules/machineLearning-utils.mjs';
+import {readSizeOfImages} from './modules/image-utils.mjs';
 
 const images = ['./image/cats_00001.jpg', './image/dogs_00001.jpg', './image/panda_00001.jpg'];
 
@@ -16,29 +16,17 @@ const main = R.pipe(R.applySpec({
     R.tap(mvFile)
 )
 
-
 const calculBbox = (bboxValue, imageDim) => {
-    return bboxValue + imageDim
+    return bboxValue + imageDim.height - imageDim.width
 };
 
+const mainPartTwo = image => R.zipWith(calculBbox , readBbox(callTensorflow(image)), R.repeat(readSizeOfImages(image[0]),4))
 
-const mainPartTwo = image => R.zipWith(calculBbox , readBbox(callTensorflow(image)), [1,2,3,4])
-
-//
-// const mainPartTwo = R.pipe(R.applySpec({
-//         sourceFile: R.identity,
-//         bbox: R.zipWith(calculBbox , [1,2], [1,2]),
-//         image: R.map(readSizeOfImages, R.identity)
-//     }),
-//
-
-
-
+// utiliser R.times !
 
 const mapIndexed = R.addIndex(R.map);
 
 // console.log(mapIndexed(main, images))
-console.log(mainPartTwo(images))
-// console.log(readBbox(callTensorflow(images)))
 
-// console.log(R.map(readSizeOfImages, images))
+// console.log(R.map(mainPartTwo,images))
+console.log(mainPartTwo(images))

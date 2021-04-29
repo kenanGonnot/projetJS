@@ -7,4 +7,6 @@ const callTensorflow = str => ({
 
 const readPrediction = R.prop('prediction');
 
-export {callTensorflow, readPrediction};
+const readBbox = R.prop('bbox');
+
+export {callTensorflow, readPrediction, readBbox};
