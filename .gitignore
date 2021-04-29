@@ -1,3 +1,4 @@
 # Project exclude paths
 /image/
 /node_modules/
+/predicted/
