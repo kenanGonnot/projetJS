@@ -7,7 +7,7 @@ const images = ['./image/cats_00001.jpg', './image/dogs_00001.jpg', './image/pan
 
 const mvFile = sourceAndPrediction => mvToFilePredicted(sourceAndPrediction.sourceFile, sourceAndPrediction.prediction, sourceAndPrediction.index)
 
-const main = R.pipe(R.applySpec({
+const mainPartOne = R.pipe(R.applySpec({
         sourceFile: R.nthArg(0),
         prediction: R.pipe(callTensorflow, readPrediction),
         index: R.nthArg(1)
@@ -16,17 +16,12 @@ const main = R.pipe(R.applySpec({
     R.tap(mvFile)
 )
 
-const calculBbox = (bboxValue, imageDim) => {
-    return bboxValue + imageDim.height - imageDim.width
-};
+const mapIndexed = R.addIndex(R.map);
+
+const calculBbox = (bboxValue, imageDim) => R.divide(R.multiply(imageDim.height, bboxValue), imageDim.width);
 
 const mainPartTwo = image => R.zipWith(calculBbox , readBbox(callTensorflow(image)), R.repeat(readSizeOfImages(image[0]),4))
 
-// utiliser R.times !
+console.log(mapIndexed(mainPartOne, images))
 
-const mapIndexed = R.addIndex(R.map);
-
-// console.log(mapIndexed(main, images))
-
-// console.log(R.map(mainPartTwo,images))
 console.log(mainPartTwo(images))
